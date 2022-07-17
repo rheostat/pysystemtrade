@@ -13,11 +13,6 @@ class equitiesSimData(simData):
         super().__init__(log=data.log)
         self._data = data
 
-    # def __repr__(self):
-    #     return "equitiesSimData object %d instruments" % len(
-    #         self.get_instrument_list()
-    #     )
-
     @property
     def data(self):
         return self._data
@@ -25,8 +20,20 @@ class equitiesSimData(simData):
     def get_instrument_list(self) -> list:
         return self.data.db_equities_prices.get_list_of_equities_codes()
 
+    def get_raw_high(self, instrument_code: str) -> pd.Series:
+        return self.get_raw_high_from_start_date(instrument_code, self.start_date_for_data())
+
+    def get_raw_high_from_start_date(self, instrument_code: str, start_date: datetime.datetime) -> pd.Series:
+        return self.data.db_equities_prices.get_equities_prices(instrument_code, start_date).high
+
+    def get_raw_low(self, instrument_code: str) -> pd.Series:
+        return self.get_raw_low_from_start_date(instrument_code, self.start_date_for_data())
+
+    def get_raw_low_from_start_date(self, instrument_code: str, start_date: datetime.datetime) -> pd.Series:
+        return self.data.db_equities_prices.get_equities_prices(instrument_code, start_date).low
+
     def get_raw_price_from_start_date(self, instrument_code: str, start_date: datetime.datetime) -> pd.Series:
-        return self.data.db_equities_prices.get_equities_prices(instrument_code, start_date).adjusted_close
+        return self.data.db_equities_prices.get_equities_prices(instrument_code, start_date).close
 
     def get_instrument_currency(self, instrument_code: str) -> str:
         return 'USD'
