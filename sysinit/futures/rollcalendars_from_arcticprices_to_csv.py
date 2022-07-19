@@ -6,14 +6,17 @@ from sysdata.arctic.arctic_futures_per_contract_prices import (
 )
 from sysdata.mongodb.mongo_roll_data import mongoRollParametersData, rollParameters, rollParametersData
 from sysobjects.roll_calendars import rollCalendar
-from sysdata.csv.csv_roll_calendars import csvRollCalendarData
+from sysdata.csv.csv_roll_calendars import csvRollCalendarData, CSV_ROLL_CALENDAR_DIRECTORY
 from sysproduction.data.prices import get_valid_instrument_code_from_user
+
+from os import environ
 
 """
 Generate a 'best guess' roll calendar based on some price data for individual contracts
 
 """
 
+OUTPUT_DATA_PATH = environ.get('PYSYSTEMTRADE_OUTPUT_DATA_PATH', CSV_ROLL_CALENDAR_DIRECTORY)
 
 def build_and_write_roll_calendar(
     instrument_code,
@@ -119,8 +122,10 @@ def check_saved_roll_calendar(
 
 
 if __name__ == "__main__":
-    input("Will overwrite existing roll calendar are you sure?! CTL-C to abort")
+    print(f'Will write output to {OUTPUT_DATA_PATH}. Set PYSYSTEMTRADE_OUTPUT_DATA_PATH in the environment to change the output location.')
+
+    if OUTPUT_DATA_PATH == CSV_ROLL_CALENDAR_DIRECTORY:
+        input("Will overwrite existing roll calendar are you sure?! CTL-C to abort")
+
     instrument_code = get_valid_instrument_code_from_user(source="single")
-    ## MODIFY DATAPATH IF REQUIRED
-    # build_and_write_roll_calendar(instrument_code, output_datapath=arg_not_supplied)
-    build_and_write_roll_calendar(instrument_code, output_datapath="/home/rob/")
+    build_and_write_roll_calendar(instrument_code, output_datapath=OUTPUT_DATA_PATH)
