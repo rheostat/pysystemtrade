@@ -7,9 +7,10 @@ from systems.forecasting import Rules
 from systems.accounts.accounts_stage import Account
 from systems.portfolio import Portfolios
 from systems.rawdata import RawData
-from systems.provided.rules.ewmac import ewmac, ewmac_calc_vol
-from systems.provided.rules.breakout import breakout
-from systems.provided.rules.accel import accel
+from systems.provided.mike.rules import rules
+# from systems.provided.rules.ewmac import ewmac, ewmac_calc_vol
+# from systems.provided.rules.breakout import breakout
+# from systems.provided.rules.accel import accel
 from sysdata.sim.db_equities_sim_data import dbEquitiesSimData
 from sysdata.config.configdata import Config
 from IPython import display
@@ -19,34 +20,33 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 import math
-plt.rc('figure', figsize=(30, 15))
 
 
-rules = Rules(dict(
-    mac4 = TradingRule(ewmac, ['rawdata.get_daily_prices', 'rawdata.daily_returns_volatility'], {'Lfast':4, 'Lslow':16}),
-    mac8 = TradingRule(ewmac, ['rawdata.get_daily_prices', 'rawdata.daily_returns_volatility'], {'Lfast':8, 'Lslow':32}),
-    mac16 = TradingRule(ewmac, ['rawdata.get_daily_prices', 'rawdata.daily_returns_volatility'], {'Lfast':16, 'Lslow':64}),
-    mac32 = TradingRule(ewmac, ['rawdata.get_daily_prices', 'rawdata.daily_returns_volatility'], {'Lfast':32, 'Lslow':128}),
-    mac64 = TradingRule(ewmac, ['rawdata.get_daily_prices', 'rawdata.daily_returns_volatility'], {'Lfast':64, 'Lslow':256}),
+# rules = Rules(dict(
+#     mac4 = TradingRule(ewmac, ['rawdata.get_daily_prices', 'rawdata.daily_returns_volatility'], {'Lfast':4, 'Lslow':16}),
+#     mac8 = TradingRule(ewmac, ['rawdata.get_daily_prices', 'rawdata.daily_returns_volatility'], {'Lfast':8, 'Lslow':32}),
+#     mac16 = TradingRule(ewmac, ['rawdata.get_daily_prices', 'rawdata.daily_returns_volatility'], {'Lfast':16, 'Lslow':64}),
+#     mac32 = TradingRule(ewmac, ['rawdata.get_daily_prices', 'rawdata.daily_returns_volatility'], {'Lfast':32, 'Lslow':128}),
+#     mac64 = TradingRule(ewmac, ['rawdata.get_daily_prices', 'rawdata.daily_returns_volatility'], {'Lfast':64, 'Lslow':256}),
 
-    normmom2 = TradingRule(ewmac_calc_vol, ['rawdata.get_cumulative_daily_vol_normalised_returns'], {'Lfast':2, 'Lslow':8}),
-    normmom4 = TradingRule(ewmac_calc_vol, ['rawdata.get_cumulative_daily_vol_normalised_returns'], {'Lfast':4, 'Lslow':16}),
-    normmom8 = TradingRule(ewmac_calc_vol, ['rawdata.get_cumulative_daily_vol_normalised_returns'], {'Lfast':8, 'Lslow':32}),
-    normmom16 = TradingRule(ewmac_calc_vol, ['rawdata.get_cumulative_daily_vol_normalised_returns'], {'Lfast':16, 'Lslow':64}),
-    normmom32 = TradingRule(ewmac_calc_vol, ['rawdata.get_cumulative_daily_vol_normalised_returns'], {'Lfast':32, 'Lslow':128}),
-    normmom64 = TradingRule(ewmac_calc_vol, ['rawdata.get_cumulative_daily_vol_normalised_returns'], {'Lfast':64, 'Lslow':256}),
+#     normmom2 = TradingRule(ewmac_calc_vol, ['rawdata.get_cumulative_daily_vol_normalised_returns'], {'Lfast':2, 'Lslow':8}),
+#     normmom4 = TradingRule(ewmac_calc_vol, ['rawdata.get_cumulative_daily_vol_normalised_returns'], {'Lfast':4, 'Lslow':16}),
+#     normmom8 = TradingRule(ewmac_calc_vol, ['rawdata.get_cumulative_daily_vol_normalised_returns'], {'Lfast':8, 'Lslow':32}),
+#     normmom16 = TradingRule(ewmac_calc_vol, ['rawdata.get_cumulative_daily_vol_normalised_returns'], {'Lfast':16, 'Lslow':64}),
+#     normmom32 = TradingRule(ewmac_calc_vol, ['rawdata.get_cumulative_daily_vol_normalised_returns'], {'Lfast':32, 'Lslow':128}),
+#     normmom64 = TradingRule(ewmac_calc_vol, ['rawdata.get_cumulative_daily_vol_normalised_returns'], {'Lfast':64, 'Lslow':256}),
     
-    breakout10 = TradingRule(breakout, [], {'lookback':10}),
-    breakout20 = TradingRule(breakout, [], {'lookback':20}),
-    breakout40 = TradingRule(breakout, [], {'lookback':40}),
-    breakout80 = TradingRule(breakout, [], {'lookback':80}),
-    breakout160 = TradingRule(breakout, [], {'lookback':160}),
-    breakout320 = TradingRule(breakout, [], {'lookback':320}),
+#     breakout10 = TradingRule(breakout, [], {'lookback':10}),
+#     breakout20 = TradingRule(breakout, [], {'lookback':20}),
+#     breakout40 = TradingRule(breakout, [], {'lookback':40}),
+#     breakout80 = TradingRule(breakout, [], {'lookback':80}),
+#     breakout160 = TradingRule(breakout, [], {'lookback':160}),
+#     breakout320 = TradingRule(breakout, [], {'lookback':320}),
 
-    accel16 = TradingRule(accel, ['rawdata.get_daily_prices', 'rawdata.daily_returns_volatility'], {'Lfast':16}),
-    accel32 = TradingRule(accel, ['rawdata.get_daily_prices', 'rawdata.daily_returns_volatility'], {'Lfast':32}),
-    accel64 = TradingRule(accel, ['rawdata.get_daily_prices', 'rawdata.daily_returns_volatility'], {'Lfast':64}),
-))
+#     accel16 = TradingRule(accel, ['rawdata.get_daily_prices', 'rawdata.daily_returns_volatility'], {'Lfast':16}),
+#     accel32 = TradingRule(accel, ['rawdata.get_daily_prices', 'rawdata.daily_returns_volatility'], {'Lfast':32}),
+#     accel64 = TradingRule(accel, ['rawdata.get_daily_prices', 'rawdata.daily_returns_volatility'], {'Lfast':64}),
+# ))
 
 
 def align_yaxis(ax1, ax2):

@@ -7,5 +7,9 @@
 			"path": "../dhalia"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"python.analysis.extraPaths": [
+			".",
+		]
+	},
 }
