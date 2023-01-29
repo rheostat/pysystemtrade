@@ -68,8 +68,17 @@ def process_adjusted_prices_single_instrument(
 
 
 if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--write_csv', action='store_true', default=True)
+    parser.add_argument('--write_arctic', action='store_true', default=True)
+    parser.add_argument('--adjusted_data_path', default=arg_not_supplied)
+
+    args = parser.parse_args()
+
     input("Will overwrite existing prices are you sure?! CTL-C to abort")
     # modify flags and datapath as required
     process_adjusted_prices_all_instruments(
-        ADD_TO_ARCTIC=True, ADD_TO_CSV=True, csv_adj_data_path=arg_not_supplied
+        ADD_TO_ARCTIC=args.write_arctic, ADD_TO_CSV=args.write_csv, csv_adj_data_path=args.adjusted_data_path
     )
