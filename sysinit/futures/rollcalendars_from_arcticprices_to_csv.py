@@ -122,8 +122,14 @@ def check_saved_roll_calendar(
 
 
 if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument('--roll_data_path', default=arg_not_supplied)
+    args = parser.parse_args()
+
     input("Will overwrite existing roll calendar are you sure?! CTL-C to abort")
     instrument_code = get_valid_instrument_code_from_user(source="single")
     ## MODIFY DATAPATH IF REQUIRED
-    # build_and_write_roll_calendar(instrument_code, output_datapath=arg_not_supplied)
-    build_and_write_roll_calendar(instrument_code, output_datapath="/home/rob/")
+    build_and_write_roll_calendar(instrument_code, output_datapath=args.roll_data_path)

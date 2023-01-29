@@ -195,15 +195,28 @@ def add_phantom_row(
 
 
 if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--multiple_data_path', default=arg_not_supplied)
+    parser.add_argument('--roll_data_path', default=arg_not_supplied)
+    parser.add_argument('--write_csv', action='store_true', default=False)
+    parser.add_argument('--write_arctic', action='store_true', default=False)
+    args = parser.parse_args()
+
+    print(args)
+
     input("Will overwrite existing prices are you sure?! CTL-C to abort")
     # change if you want to write elsewhere
-    csv_multiple_data_path = arg_not_supplied
+    csv_multiple_data_path = args.multiple_data_path
 
     # only change if you have written the files elsewhere
-    csv_roll_data_path = arg_not_supplied
+    csv_roll_data_path = args.roll_data_path
 
     # modify flags as required
     process_multiple_prices_all_instruments(
         csv_multiple_data_path=csv_multiple_data_path,
         csv_roll_data_path=csv_roll_data_path,
+        ADD_TO_ARCTIC=args.write_arctic,
+        ADD_TO_CSV=args.write_csv
     )
