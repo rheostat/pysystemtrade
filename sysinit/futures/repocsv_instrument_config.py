@@ -4,15 +4,16 @@ Populate a mongo DB collection with instrument data from the instrument data in 
 """
 from syscore.genutils import new_removing_existing
 from syscore.interactive.input import true_if_answer_is_yes
+from syscore.constants import arg_not_supplied
 from sysdata.mongodb.mongo_futures_instruments import mongoFuturesInstrumentData
 from sysdata.csv.csv_instrument_data import csvFuturesInstrumentData
 from sysdata.data_blob import dataBlob
 from sysproduction.data.prices import diagPrices
 
 
-def copy_instrument_config_from_csv_to_mongo(data: dataBlob):
+def copy_instrument_config_from_csv_to_mongo(data: dataBlob, datapath=arg_not_supplied):
     data_out = mongoFuturesInstrumentData(data.mongo_db)
-    data_in = csvFuturesInstrumentData()
+    data_in = csvFuturesInstrumentData(datapath=datapath)
 
     print("Transferring from %s to %s" % (str(data_in), str(data_out)))
 
@@ -147,6 +148,11 @@ def process_deleted_instruments(data_out, deleted_instruments):
 
 
 if __name__ == "__main__":
+    import argparse
+    
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--csv_data_path", default=arg_not_supplied)
+    args = parser.parse_args()
+    
     print("Transfer instrument config from csv to mongo DB")
-    # modify flags as required
-    copy_instrument_config_from_csv_to_mongo(dataBlob())
+    copy_instrument_config_from_csv_to_mongo(dataBlob(), datapath=args.csv_data_path)
