@@ -2,6 +2,7 @@
 Populate a mongo DB collection with roll data from a csv
 """
 import argparse
+from syscore.constants import arg_not_supplied
 from syscore.genutils import new_removing_existing
 from syscore.interactive.input import true_if_answer_is_yes
 from sysdata.mongodb.mongo_roll_data import mongoRollParametersData
@@ -13,10 +14,10 @@ from sysproduction.data.prices import diagPrices
 
 
 def copy_roll_parameters_from_csv_to_mongo(
-    data: dataBlob, echo_difference=False, check_only=False
+    data: dataBlob, echo_difference=False, check_only=False, datapath=arg_not_supplied
 ):
     data_out = mongoRollParametersData(data.mongo_db)
-    data_in = csvRollParametersData()
+    data_in = csvRollParametersData(datapath=datapath)
 
     print("Transferring from %s to %s" % (str(data_in), str(data_out)))
 
@@ -162,7 +163,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--echo-diff", action="store_true")
     parser.add_argument("--check-only", action="store_true")
+    parser.add_argument("--csv_data_path", default=arg_not_supplied)
     parsed = parser.parse_args()
     copy_roll_parameters_from_csv_to_mongo(
-        dataBlob(), echo_difference=parsed.echo_diff, check_only=parsed.check_only
+        dataBlob(), echo_difference=parsed.echo_diff, check_only=parsed.check_only, datapath=parsed.csv_data_path
     )
